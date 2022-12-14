@@ -1,6 +1,7 @@
 ## Minesweeper GymEnv
 
 ### Installation
+
 ```bash
 pip install -r requirements.txt && 
 pip install pygame --pre && 
@@ -9,6 +10,7 @@ pip install -e .
 ```
 
 ### Usage
+
 ```bash
 python main.py
 ```
