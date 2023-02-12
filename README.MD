@@ -2,8 +2,9 @@
 
 Minesweeper Env is a gym environment for the game of minesweeper. The goal of the game is to clear a rectangular board containing hidden "mines" or bombs without detonating any of them, with help from clues about the number of neighboring mines in each field.  
 
-You can play the game or train an agent to play the game using the gym environment.
+You can play the game or train an agent to play the game using the gym environment and configure different action spaces and observation spaces.
 
+I used the reward structure from this [repository](https://github.com/jakejhansen/minesweeper_solver#reward-structure)
 
 
 ### Installation
