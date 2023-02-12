@@ -2,7 +2,7 @@
 
 ### Installation
 
-Python 3.10 x64 is required.
+Python 3.10
 ```bash
 pip install -r requirements.txt && 
 cd minesweeper_env && 
