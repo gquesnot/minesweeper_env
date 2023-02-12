@@ -1,8 +1,4 @@
-stable-baselines3~=1.6.2
-sb3-contrib~=1.6.2
 pygame~=2.1.2
 gym~=0.21.0
-pandas~=1.5.2
-ray~=2.1.0
 setuptools~=65.5.1
 numpy~=1.23.4

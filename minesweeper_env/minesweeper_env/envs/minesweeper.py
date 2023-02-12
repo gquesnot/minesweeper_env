@@ -113,20 +113,20 @@ class MinesweeperEnv(Env):
                 self._reset_mines(x, y)
         if self._is_mine(x, y):
             self._set_case(x, y, BoxType.MINE)
-            reward += Reward.LOSE
+            reward = Reward.LOSE
             terminated = True
         elif cell_type == BoxType.NOT_REVEALED:
-            reward += Reward.YOLO if self._is_yolo(x, y) else Reward.PROGRESS
+            reward = Reward.YOLO if self._is_yolo(x, y) else Reward.PROGRESS
             adjacent_mines = self._set_adjacent_mines(x, y)
             if adjacent_mines == BoxType.EMPTY:
                 self._reveal_neighbours(x, y)
-            if self.has_won():
-                reward += Reward.WIN
+            if np.count_nonzero(self.board == BoxType.NOT_REVEALED) == self.num_mines:
+                reward = Reward.WIN
                 terminated = True
         else:
             if self.options.rule_clicked_case == ClickedCaseType.SOME_LOSS or \
                     self.options.rule_clicked_case == ClickedCaseType.LOSE_THE_GAME_AND_SOME_LOSS:
-                reward += Reward.NO_PROGRESS
+                reward = Reward.NO_PROGRESS
             if self.options.rule_clicked_case == ClickedCaseType.LOSE_THE_GAME or \
                     self.options.rule_clicked_case == ClickedCaseType.LOSE_THE_GAME_AND_SOME_LOSS:
                 terminated = True
@@ -157,7 +157,7 @@ class MinesweeperEnv(Env):
 
         return self._get_obs()
 
-    def render(self, mode="human"):
+    def render(self, mode: str = "human"):
         if mode == "human":
             self._check_or_init_pygame()
             self._check_or_start_screen()
@@ -306,13 +306,6 @@ class MinesweeperEnv(Env):
         else:
             self.board[self.mines] = BoxType.MINE
 
-    def has_won(self) -> bool:
-        if self.options.action == ActionType.MULTI_DISCRETE:
-            return np.count_nonzero(self.board == BoxType.NOT_REVEALED) == self.num_mines
-        else:
-            nb_not_reveled = np.count_nonzero(self.board == BoxType.NOT_REVEALED)
-        return nb_not_reveled == self.num_mines
-
     def close(self):
         if self.screen is not None or self.pygame_init:
             pygame.quit()
@@ -327,8 +320,6 @@ class MinesweeperEnv(Env):
 
     def play_has_human(self):
         self.reset()
-        self._check_or_init_pygame()
-        self._check_or_start_screen()
         self.render()
         self._pygame_loop()
 
@@ -403,13 +394,13 @@ class MinesweeperEnv(Env):
                             action = x, y
                         else:
                             action = self._get_cell_index(x, y)
-                        obs, rewards, done, info = self.step(action)
+                        obs, reward, done, info = self.step(action)
                         self.render()
                         if done:
                             sleep(1)
-                            self.screen.fill((255, 0, 0) if not self.has_won() else (0, 255, 0))
+                            self.screen.fill((255, 0, 0) if not reward == Reward.WIN  else (0, 255, 0))
                             self._write_pygame_text(
-                                ("You won!" if rewards == Reward.WIN else "You lost!") + " Click to restart",
+                                ("You won!" if reward == Reward.WIN else "You lost!") + " Click to restart",
                                 (255, 255, 255),
                                 (self.width * self.CELL_LENGTH // 2, self.height * self.CELL_LENGTH // 2),
                             )
